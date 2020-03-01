@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "80d82c681a783d3a3c720e51a7c7f76cf105e54b28af210dbfc66b7ab6d3eb0f"
+            "sha256": "a286bffb96fb280abe725d3cf5c54a7baaa3c7ec3b45c8c3eb1af3e7e90e4fb5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -406,6 +406,10 @@
                 "sha256:b1ddb932186d8a6ac451e1d95844b382f55e12686d51ca0c68b6f61f2ab7a507"
             ],
             "version": "==8.2.0"
+        },
+        "mowgli": {
+            "editable": true,
+            "path": "."
         },
         "packaging": {
             "hashes": [
