@@ -1,3 +1,6 @@
+import numpy as np
+import numpy.testing as npt
+
 from pytest import raises
 
 from mowgli import datasets
@@ -20,3 +23,11 @@ def test_should_load_2_labels():
 def test_should_throw_error_for_non_existent_file():
     with raises(FileNotFoundError):
         datasets.labels("foo.csv")
+
+
+def test_should_load_dataset():
+    actual_dataset = datasets.load_dataset("tests/resources/dataset.csv")
+    actual_labels, actual_features = actual_dataset.batch(3).as_numpy_iterator().next()
+
+    npt.assert_array_equal(actual_labels, np.array([2, 1, 0], dtype=int))
+    npt.assert_array_equal(actual_features, np.array([b'foo bar', b'foobar', b'spaghetti'], dtype=object))
