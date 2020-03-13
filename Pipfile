@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.7"
@@ -13,3 +14,6 @@ python_version = "3.7"
 tensorflow = "*"
 mowgli = {editable = true,path = "."}
 scikit-learn = "*"
+
+[scripts]
+lint = "pylint mowgli"
