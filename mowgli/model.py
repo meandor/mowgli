@@ -1,5 +1,9 @@
+import logging
+
 from sklearn.feature_extraction.text import CountVectorizer
 from tensorflow import keras
+
+LOG = logging.getLogger(__name__)
 
 
 def _extract_features(_labels, features):
@@ -7,7 +11,10 @@ def _extract_features(_labels, features):
 
 
 def train_vectorizer(dataset, vocabulary_size):
-    vectorizer = CountVectorizer(max_features=vocabulary_size, preprocessor=lambda x: str(x.numpy()))
+    vectorizer = CountVectorizer(
+        max_features=vocabulary_size,
+        preprocessor=lambda x: str(x.numpy())
+    )
     vectorizer.fit(dataset.map(_extract_features))
     return vectorizer
 
