@@ -1,7 +1,11 @@
 import csv
+import logging
 import os
+from functools import partial
 
 import tensorflow as tf
+
+LOG = logging.getLogger(__name__)
 
 
 def labels(csv_file_path):
@@ -21,3 +25,17 @@ def load_dataset(dataset_path):
     absolute_dataset_path = os.path.realpath(dataset_path)
     raw_lines_dataset = tf.data.TextLineDataset(absolute_dataset_path)
     return raw_lines_dataset.map(parse_line)
+
+
+def vectorize_feature(vectorizer, feature):
+    [vectorized_feature] = vectorizer.transform(feature).toarray()
+    return vectorized_feature
+
+
+def apply_vectorizer(vectorizer, label, feature):
+    feature = tf.py_function(partial(vectorize_feature, vectorizer), [[feature]], tf.int64)
+    return label, feature
+
+
+def vectorize(vectorizer, dataset):
+    return dataset.map(partial(apply_vectorizer, vectorizer))
