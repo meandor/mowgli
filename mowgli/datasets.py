@@ -18,7 +18,7 @@ def labels(csv_file_path):
 def parse_line(line):
     split_line = tf.strings.split(line, sep=',')
     parsed_label = tf.strings.to_number(split_line[0], out_type=tf.dtypes.int32)
-    return parsed_label, split_line[1]
+    return split_line[1], parsed_label
 
 
 def load_dataset(dataset_path):
@@ -27,15 +27,16 @@ def load_dataset(dataset_path):
     return raw_lines_dataset.map(parse_line)
 
 
-def vectorize_feature(vectorizer, feature):
+def _vectorize_feature(vectorizer, feature):
     [vectorized_feature] = vectorizer.transform(feature).toarray()
+    LOG.info('%s',vectorized_feature)
     return vectorized_feature
 
 
-def apply_vectorizer(vectorizer, label, feature):
-    feature = tf.py_function(partial(vectorize_feature, vectorizer), [[feature]], tf.int64)
-    return label, feature
+def _apply_vectorizer(vectorizer, feature, label):
+    feature = tf.py_function(partial(_vectorize_feature, vectorizer), [[feature]], tf.int64)
+    return feature, label
 
 
 def vectorize(vectorizer, dataset):
-    return dataset.map(partial(apply_vectorizer, vectorizer))
+    return dataset.map(partial(_apply_vectorizer, vectorizer))

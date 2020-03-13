@@ -26,7 +26,7 @@ def test_should_throw_error_for_non_existent_file():
 
 def test_should_load_dataset():
     actual_dataset = datasets.load_dataset("tests/resources/dataset.csv")
-    actual_labels, actual_features = next(iter(actual_dataset.batch(3)))
+    actual_features, actual_labels = next(iter(actual_dataset.batch(3)))
 
     npt.assert_array_equal(actual_labels, np.array([2, 1, 0], dtype=int))
     npt.assert_array_equal(actual_features, np.array([b'foo bar', b'foobar', b'spaghetti foo'], dtype=object))
@@ -37,7 +37,7 @@ def test_should_load_dataset_and_vectorize():
     given_vectorizer = model.train_vectorizer(given_dataset, 4)
 
     actual_dataset = datasets.vectorize(given_vectorizer, given_dataset)
-    actual_labels, actual_features = next(iter(actual_dataset.batch(3)))
+    actual_features, actual_labels = next(iter(actual_dataset.batch(3)))
 
     npt.assert_array_equal(actual_labels, np.array([2, 1, 0], dtype=int))
     print(actual_features)
