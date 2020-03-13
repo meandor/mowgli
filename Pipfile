@@ -5,10 +5,11 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
-mowgli = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
 
 [packages]
 tensorflow = "*"
+mowgli = {editable = true,path = "."}
+scikit-learn = "*"

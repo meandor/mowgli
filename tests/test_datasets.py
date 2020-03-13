@@ -1,6 +1,5 @@
 import numpy as np
 import numpy.testing as npt
-
 from pytest import raises
 
 from mowgli import datasets
@@ -27,7 +26,7 @@ def test_should_throw_error_for_non_existent_file():
 
 def test_should_load_dataset():
     actual_dataset = datasets.load_dataset("tests/resources/dataset.csv")
-    actual_labels, actual_features = actual_dataset.batch(3).as_numpy_iterator().next()
+    actual_labels, actual_features = next(iter(actual_dataset.batch(3)))
 
     npt.assert_array_equal(actual_labels, np.array([2, 1, 0], dtype=int))
-    npt.assert_array_equal(actual_features, np.array([b'foo bar', b'foobar', b'spaghetti'], dtype=object))
+    npt.assert_array_equal(actual_features, np.array([b'foo bar', b'foobar', b'spaghetti foo'], dtype=object))

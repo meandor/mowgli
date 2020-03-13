@@ -25,11 +25,6 @@ jobs:
       - run:
           name: Run tests
           command: pipenv run pytest
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-results
-          destination: tr1
 
 workflows:
   build-test-deploy:
