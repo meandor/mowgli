@@ -35,7 +35,11 @@ def _vectorize_feature(vectorizer, vocabulary_size, feature):
 
 
 def _apply_vectorizer(vectorizer, vocabulary_size, feature, label):
-    feature = tf.py_function(partial(_vectorize_feature, vectorizer, vocabulary_size), [[feature]], tf.int64)
+    feature = tf.py_function(
+        partial(_vectorize_feature, vectorizer, vocabulary_size),
+        [[feature]],
+        tf.int64
+    )
     return tf.reshape(feature, [vocabulary_size]), label
 
 
