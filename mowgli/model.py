@@ -40,18 +40,16 @@ def classification_model(vocabulary_size, embedding_dimension, labels_count):
     return keras.Model(inputs=input_layer, outputs=output_layer)
 
 
+def _count_dataset_size(dataset):
+    return dataset.map(_extract_features).reduce(tf.constant(0), lambda x, _: x + 1).numpy()
+
+
 def train_classification_model(model, batch_size, epochs, train_dataset, test_dataset):
-    train_dataset_size = train_dataset \
-        .map(_extract_features) \
-        .reduce(tf.constant(0), lambda x, _: x + 1) \
-        .numpy()
+    train_dataset_size = _count_dataset_size(train_dataset)
     train_dataset_batches = int(train_dataset_size / batch_size)
     batched_train_dataset = train_dataset.batch(batch_size).repeat()
 
-    test_dataset_size = test_dataset \
-        .map(_extract_features) \
-        .reduce(tf.constant(0), lambda x, _: x + 1) \
-        .numpy()
+    test_dataset_size = _count_dataset_size(test_dataset)
     test_dataset_batches = int(test_dataset_size / batch_size)
     batched_test_dataset = test_dataset.batch(batch_size).repeat()
 
