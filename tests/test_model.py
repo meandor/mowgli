@@ -2,7 +2,7 @@ import tensorflow as tf
 from sklearn.feature_extraction.text import CountVectorizer
 from tensorflow.keras import Model
 
-from mowgli import model, datasets
+from mowgli import model
 
 
 def test_should_return_vectorizer():
