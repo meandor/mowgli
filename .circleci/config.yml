@@ -39,8 +39,21 @@ jobs:
       - run:
           name: Run tests
           command: pipenv run pytest
+  lint:
+    <<: *python-docker-image
+    steps:
+      - checkout
+      - restore-pipenv-cache
+      - run:
+          name: Install dependencies
+          command: pipenv sync --dev
+      - save-pipenv-cache
+      - run:
+          name: Run linter
+          command: pipenv run lint
 
 workflows:
   build-test-deploy:
     jobs:
       - test
+      - lint
