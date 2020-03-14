@@ -17,3 +17,4 @@ scikit-learn = "*"
 
 [scripts]
 lint = "pylint mowgli"
+train = "python mowgli/train.py"
