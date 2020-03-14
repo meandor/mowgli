@@ -50,6 +50,7 @@ def run():
         vectorized_test_dataset,
         labels
     )
+    model.save_evaluation_results(model_metrics, confusion_matrix, classification_report)
     LOG.info('Done evaluating model')
 
 

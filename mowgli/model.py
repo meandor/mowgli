@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 
 import numpy as np
 import tensorflow as tf
@@ -112,3 +114,13 @@ def evaluate_classification_model(model, test_dataset, labels):
             output_dict=True
         )
     )
+
+
+def save_evaluation_results(model_metrics, confusion_matrix, classification_report):
+    base_path = 'resources/evaluation/'
+    with open(os.path.realpath(base_path + 'metrics.json'), 'w') as metrics_file:
+        formatted_metrics = {k: "%.2f" % v for k, v in model_metrics.items()}
+        metrics_file.write(json.dumps(formatted_metrics))
+        metrics_file.close()
+
+    return None
