@@ -2,6 +2,7 @@ import csv
 import logging
 import os
 from functools import partial
+from itertools import repeat
 
 import tensorflow as tf
 
@@ -27,16 +28,16 @@ def load_dataset(dataset_path):
     return raw_lines_dataset.map(parse_line)
 
 
-def _vectorize_feature(vectorizer, feature):
+def _vectorize_feature(vectorizer, vocabulary_size, feature):
     [vectorized_feature] = vectorizer.transform(feature).toarray()
-    LOG.info('%s',vectorized_feature)
-    return vectorized_feature
+    zeros = list(repeat(0, vocabulary_size - len(vectorized_feature)))
+    return tf.concat([vectorized_feature, zeros], 0)
 
 
-def _apply_vectorizer(vectorizer, feature, label):
-    feature = tf.py_function(partial(_vectorize_feature, vectorizer), [[feature]], tf.int64)
-    return feature, label
+def _apply_vectorizer(vectorizer, vocabulary_size, feature, label):
+    feature = tf.py_function(partial(_vectorize_feature, vectorizer, vocabulary_size), [[feature]], tf.int64)
+    return tf.reshape(feature, [vocabulary_size]), label
 
 
-def vectorize(vectorizer, dataset):
-    return dataset.map(partial(_apply_vectorizer, vectorizer))
+def vectorize(vectorizer, vocabulary_size, dataset):
+    return dataset.map(partial(_apply_vectorizer, vectorizer, vocabulary_size))
