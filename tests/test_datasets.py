@@ -6,26 +6,26 @@ from mowgli import datasets, model
 
 
 def test_should_load_1_label():
-    actual = datasets.labels("tests/resources/one-label.csv")
-    expected = [[1337, "foobar"]]
+    actual = datasets.labels('tests/resources/one-label.csv')
+    expected = {1337: 'foobar'}
 
     assert expected == actual
 
 
 def test_should_load_2_labels():
-    actual = datasets.labels("tests/resources/labels.csv")
-    expected = [[0, "foo"], [1, "bar"]]
+    actual = datasets.labels('tests/resources/labels.csv')
+    expected = {0: 'foo', 1: 'bar'}
 
     assert expected == actual
 
 
 def test_should_throw_error_for_non_existent_file():
     with raises(FileNotFoundError):
-        datasets.labels("foo.csv")
+        datasets.labels('foo.csv')
 
 
 def test_should_load_dataset():
-    actual_dataset = datasets.load_dataset("tests/resources/dataset.csv", 3)
+    actual_dataset = datasets.load_dataset('tests/resources/dataset.csv', 3)
     actual_features, actual_labels = next(iter(actual_dataset.batch(3)))
 
     npt.assert_array_equal(actual_labels, np.array([
@@ -37,7 +37,7 @@ def test_should_load_dataset():
 
 
 def test_should_load_dataset_and_vectorize_vocab_size_4():
-    given_dataset = datasets.load_dataset("tests/resources/dataset.csv", 3)
+    given_dataset = datasets.load_dataset('tests/resources/dataset.csv', 3)
     given_vocabulary_size = 4
     given_vectorizer = model.train_vectorizer(given_dataset, given_vocabulary_size)
 
@@ -53,7 +53,7 @@ def test_should_load_dataset_and_vectorize_vocab_size_4():
 
 
 def test_should_load_dataset_and_vectorize_vocab_size_10_fill_zeros():
-    given_dataset = datasets.load_dataset("tests/resources/dataset.csv", 3)
+    given_dataset = datasets.load_dataset('tests/resources/dataset.csv', 3)
     given_vocabulary_size = 10
     given_vectorizer = model.train_vectorizer(given_dataset, given_vocabulary_size)
 

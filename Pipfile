@@ -7,6 +7,7 @@ verify_ssl = true
 pytest = "*"
 pylint = "*"
 tensorboard = "*"
+pytest-mock = "*"
 
 [requires]
 python_version = "3.7"

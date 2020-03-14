@@ -1,13 +1,19 @@
 import logging
 
+import numpy as np
 import tensorflow as tf
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import confusion_matrix, classification_report
 
 LOG = logging.getLogger(__name__)
 
 
 def _extract_features(features, _labels):
     return features
+
+
+def _extract_labels(_features, labels):
+    return labels
 
 
 def train_vectorizer(dataset, vocabulary_size):
@@ -70,4 +76,39 @@ def train_classification_model(model, batch_size, epochs, train_dataset, test_da
         validation_steps=test_dataset_batches,
         shuffle=False,
         callbacks=callbacks,
+    )
+
+
+def _model_metrics(model, batched_test_dataset):
+    result = model.evaluate(batched_test_dataset)
+    return dict(zip(model.metrics_names, result))
+
+
+def evaluate_classification_model(model, test_dataset, labels):
+    test_dataset_size = _count_dataset_size(test_dataset)
+    model_metrics = _model_metrics(model, test_dataset.batch(test_dataset_size))
+
+    predictions_one_hot = model.predict(test_dataset.batch(test_dataset_size))
+    predicted_labels = list(map(np.argmax, predictions_one_hot))
+    predicted_labels_with_names = list(map(labels.get, predicted_labels))
+
+    actual_labels_one_hot = next(iter(test_dataset.map(_extract_labels).batch(test_dataset_size))).numpy()
+    actual_labels = list(map(np.argmax, actual_labels_one_hot))
+    actual_labels_with_names = list(map(labels.get, actual_labels))
+
+    label_names = list(labels.values())
+
+    return (
+        model_metrics,
+        confusion_matrix(
+            actual_labels_with_names,
+            predicted_labels_with_names,
+            label_names
+        ),
+        classification_report(
+            actual_labels_with_names,
+            predicted_labels_with_names,
+            label_names,
+            output_dict=True
+        )
     )

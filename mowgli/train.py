@@ -33,14 +33,24 @@ def run():
     LOG.info('Start training model')
     epochs = 10
     batch_size = 32
+    vectorized_train_dataset = datasets.vectorize(vectorizer, vocabulary_size, train_dataset)
+    vectorized_test_dataset = datasets.vectorize(vectorizer, vocabulary_size, test_dataset)
     model.train_classification_model(
         classification_model,
         batch_size,
         epochs,
-        datasets.vectorize(vectorizer, vocabulary_size, train_dataset),
-        datasets.vectorize(vectorizer, vocabulary_size, test_dataset),
+        vectorized_train_dataset,
+        vectorized_test_dataset,
     )
     LOG.info('Done training model')
+
+    LOG.info('Start evaluating model')
+    model_metrics, confusion_matrix, classification_report = model.evaluate_classification_model(
+        classification_model,
+        vectorized_test_dataset,
+        labels
+    )
+    LOG.info('Done evaluating model')
 
 
 if __name__ == '__main__':
