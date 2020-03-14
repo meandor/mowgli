@@ -6,7 +6,10 @@ from mowgli import model, datasets
 
 
 def test_should_return_vectorizer():
-    given_dataset = datasets.load_dataset('tests/resources/dataset.csv')
+    given_dataset = tf.data.Dataset.from_tensor_slices((
+        ['foo bar', 'foobar', 'spaghetti foo', 'bar'],
+        [2, 1, 0, 0]
+    ))
 
     actual = model.train_vectorizer(given_dataset, 1337)
     expected_type = CountVectorizer
@@ -17,7 +20,10 @@ def test_should_return_vectorizer():
 
 
 def test_should_train_vectorizer():
-    given_dataset = datasets.load_dataset('tests/resources/dataset.csv')
+    given_dataset = tf.data.Dataset.from_tensor_slices((
+        ['foo bar', 'foobar', 'spaghetti foo', 'bar'],
+        [2, 1, 0, 0]
+    ))
 
     vectorizer = model.train_vectorizer(given_dataset, 4)
     actual = vectorizer.transform(tf.constant(['foo'])).toarray()

@@ -16,16 +16,16 @@ def labels(csv_file_path):
         return [[int(label_row[0]), label_row[1]] for label_row in labels_list]
 
 
-def parse_line(line):
+def parse_line(labels_count, line):
     split_line = tf.strings.split(line, sep=',')
     parsed_label = tf.strings.to_number(split_line[0], out_type=tf.dtypes.int32)
-    return split_line[1], parsed_label
+    return split_line[1], tf.one_hot(parsed_label, labels_count)
 
 
-def load_dataset(dataset_path):
+def load_dataset(dataset_path, labels_count):
     absolute_dataset_path = os.path.realpath(dataset_path)
     raw_lines_dataset = tf.data.TextLineDataset(absolute_dataset_path)
-    return raw_lines_dataset.map(parse_line)
+    return raw_lines_dataset.map(partial(parse_line, labels_count))
 
 
 def _vectorize_feature(vectorizer, vocabulary_size, feature):
