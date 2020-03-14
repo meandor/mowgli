@@ -11,7 +11,7 @@ pylint = "*"
 python_version = "3.7"
 
 [packages]
-tensorflow = "*"
+tensorflow = "==2.1.0"
 mowgli = {editable = true,path = "."}
 scikit-learn = "*"
 

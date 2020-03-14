@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "13d925fb9f6ce43be32862bd50e9d13d22e009498cdcdd394637a96ba3cd226c"
+            "sha256": "9b7e8f9653c80ec4e42f6bedad1795522817dce349e3bdea5cbbf48077995ce4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -58,10 +58,10 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:1ee22e22f35d6e00f068d7b3999b2ce24ecb5d0dcbd485aa6896d2b83c8907d6",
-                "sha256:28a848d47c55075a0f29d7e26b7a213515c137ab8f0670e546e46d1277060e47"
+                "sha256:4fddaf62bcfc3b9cc1bb2062130937a25ebe781b8eb15beec217c160b8cabb68",
+                "sha256:ec172006e626bb90f6069e9358c373bc991a15da6cc55276986d9ecd29235b15"
             ],
-            "version": "==1.11.2"
+            "version": "==1.11.3"
         },
         "google-auth-oauthlib": {
             "hashes": [
@@ -72,11 +72,11 @@
         },
         "google-pasta": {
             "hashes": [
-                "sha256:41bbe63bab92408452585ff2e1673ec1e35b88e163371cbed2a18510be4e8bc5",
-                "sha256:644dcf3784cf7147ab01de5dc22e60a638d219d4e4a3a7464eb98997ae2fe66f",
-                "sha256:713813a9f7d6589e5defdaf21e80e4392eb124662f8bd829acd51a4f8735c0cb"
+                "sha256:4612951da876b1a10fe3960d7226f0c7682cf901e16ac06e473b267a5afa8954",
+                "sha256:b32482794a366b5366a32c92a9a9201b107821889935a02b3e51f6b432ea84ed",
+                "sha256:c9f2c8dfc8f96d0d5808299920721be30c9eec37f2389f28904f454565c8a16e"
             ],
-            "version": "==0.1.8"
+            "version": "==0.2.0"
         },
         "grpcio": {
             "hashes": [
