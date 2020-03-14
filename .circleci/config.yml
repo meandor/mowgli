@@ -1,27 +1,41 @@
 version: 2.1
 
-jobs:
-  test:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/python:3.7
-        environment:
-          PIPENV_VENV_IN_PROJECT: true
+python-docker-image: &python-docker-image
+  working_directory: ~/repo
+  docker:
+    - image: circleci/python:3.7
+      environment:
+        PIPENV_VENV_IN_PROJECT: true
+
+commands:
+  restore-pipenv-cache:
+    description: "Restore pipenv cache"
     steps:
-      - checkout
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
       - restore_cache:
           key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-      - run:
-          name: Install dependencies
-          command: pipenv sync --dev
+
+  save-pipenv-cache:
+    description: "Save pipenv cache"
+    steps:
       - save_cache:
           key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
             - ".venv"
             - "/usr/local/bin"
             - "/usr/local/lib/python3.7/site-packages"
+
+jobs:
+  test:
+    <<: *python-docker-image
+    steps:
+      - checkout
+      - restore-pipenv-cache
+      - run:
+          name: Install dependencies
+          command: pipenv sync --dev
+      - save-pipenv-cache
       - run:
           name: Run tests
           command: pipenv run pytest
