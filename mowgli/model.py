@@ -2,7 +2,6 @@ import logging
 
 import tensorflow as tf
 from sklearn.feature_extraction.text import CountVectorizer
-from tensorflow import keras
 
 LOG = logging.getLogger(__name__)
 
@@ -21,23 +20,23 @@ def train_vectorizer(dataset, vocabulary_size):
 
 
 def classification_model(vocabulary_size, embedding_dimension, labels_count):
-    input_layer = keras.Input(shape=(vocabulary_size,), dtype='int32', name='word_vector_input')
-    embedding_layer = keras.layers.Embedding(
+    input_layer = tf.keras.Input(shape=(vocabulary_size,), dtype='int32', name='word_vector_input')
+    embedding_layer = tf.keras.layers.Embedding(
         input_dim=vocabulary_size,
         output_dim=embedding_dimension,
         name='embedding_layer'
     )(input_layer)
 
-    layer1 = keras.layers.GlobalAveragePooling1D()(embedding_layer)
-    layer2 = keras.layers.Dense(100, activation='relu')(layer1)
-    layer3 = keras.layers.Dense(25, activation='relu')(layer2)
+    layer1 = tf.keras.layers.GlobalAveragePooling1D()(embedding_layer)
+    layer2 = tf.keras.layers.Dense(100, activation='relu')(layer1)
+    layer3 = tf.keras.layers.Dense(25, activation='relu')(layer2)
 
-    output_layer = keras.layers.Dense(
+    output_layer = tf.keras.layers.Dense(
         labels_count,
         activation='softmax',
         name='classification_output'
     )(layer3)
-    return keras.Model(inputs=input_layer, outputs=output_layer)
+    return tf.keras.Model(inputs=input_layer, outputs=output_layer)
 
 
 def _count_dataset_size(dataset):
@@ -53,6 +52,10 @@ def train_classification_model(model, batch_size, epochs, train_dataset, test_da
     test_dataset_batches = int(test_dataset_size / batch_size)
     batched_test_dataset = test_dataset.batch(batch_size).repeat()
 
+    callbacks = [
+        tf.keras.callbacks.TensorBoard(log_dir='resources/tensorboard')
+    ]
+
     model.compile(
         optimizer='adam',
         loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
@@ -66,4 +69,5 @@ def train_classification_model(model, batch_size, epochs, train_dataset, test_da
         validation_data=batched_test_dataset,
         validation_steps=test_dataset_batches,
         shuffle=False,
+        callbacks=callbacks,
     )

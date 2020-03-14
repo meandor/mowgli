@@ -36,3 +36,4 @@ env.bak/
 venv.bak/
 .idea
 *.iml
+resources/tensorboard

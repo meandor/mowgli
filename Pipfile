@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pylint = "*"
+tensorboard = "*"
 
 [requires]
 python_version = "3.7"
