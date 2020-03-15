@@ -37,3 +37,5 @@ venv.bak/
 .idea
 *.iml
 resources/tensorboard
+/resources/evaluation/metrics.json
+/resources/evaluation/classification_report.png

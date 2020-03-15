@@ -89,3 +89,29 @@ def test_should_calculate_confusion_matrix_with_3_classes(mocker):
 
     npt.assert_array_equal(expected_confusion_matrix, actual_confusion_matrix)
     assert expected_classification_report == actual_classification_report
+
+
+def test_should_transform_classification_report_to_datastore():
+    given_classification_report = {
+        'foo': {
+            'precision': 0.1,
+            'recall': 0.2,
+            'f1-score': 0.3,
+            'support': 2
+        },
+        'bar': {
+            'precision': 1.0,
+            'recall': 0.9,
+            'f1-score': 0.8,
+            'support': 1
+        }
+    }
+
+    actual = model._to_columns(given_classification_report)
+    expected = {
+        'intent': ['foo', 'foo', 'foo', 'bar', 'bar', 'bar'],
+        'metric': ['precision', 'recall', 'f1-score', 'precision', 'recall', 'f1-score'],
+        'metric_value': [0.1, 0.2, 0.3, 1.0, 0.9, 0.8]
+    }
+
+    assert expected == actual

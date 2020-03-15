@@ -1,8 +1,12 @@
 import json
 import logging
 import os
+from functools import reduce, partial
 
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import seaborn as sns
 import tensorflow as tf
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import confusion_matrix, classification_report
@@ -116,11 +120,52 @@ def evaluate_classification_model(model, test_dataset, labels):
     )
 
 
+def _fill_acc(metrics_names, acc, intent_metrics):
+    intent, metrics = intent_metrics
+    return {
+        'intent': acc['intent'] + ([intent] * len(metrics_names)),
+        'metric': acc['metric'] + metrics_names,
+        'metric_value': acc['metric_value'] + list(map(lambda metric_name: metrics[metric_name], metrics_names))
+    }
+
+
+def _to_columns(classification_report):
+    metrics = ['precision', 'recall', 'f1-score']
+    initial_state = {
+        'intent': [],
+        'metric': [],
+        'metric_value': []
+    }
+    return reduce(partial(_fill_acc, metrics), classification_report.items(), initial_state)
+
+
+def _plot_classification_report(base_path, classification_report_data):
+    sns.set()
+    df = pd.DataFrame(_to_columns(classification_report_data))
+    pivot_df = df.pivot(index='intent', columns='metric', values='metric_value')
+    f, ax = plt.subplots(figsize=(9, 6))
+    sns_heatmap = sns.heatmap(
+        pivot_df,
+        annot=True,
+        fmt="f",
+        linewidths=.5,
+        ax=ax,
+        cmap="YlGnBu"
+    )
+    sns_heatmap.set_yticklabels(
+        sns_heatmap.get_yticklabels(),
+        rotation=45,
+        horizontalalignment='right'
+    )
+    plot = sns_heatmap.get_figure()
+    plot.savefig(base_path + 'classification_report.png')
+
+
 def save_evaluation_results(model_metrics, confusion_matrix, classification_report):
     base_path = 'resources/evaluation/'
     with open(os.path.realpath(base_path + 'metrics.json'), 'w') as metrics_file:
-        formatted_metrics = {k: "%.2f" % v for k, v in model_metrics.items()}
+        formatted_metrics = {k: '%.2f' % v for k, v in model_metrics.items()}
         metrics_file.write(json.dumps(formatted_metrics))
         metrics_file.close()
-
+    _plot_classification_report(base_path, classification_report)
     return None
