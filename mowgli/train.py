@@ -14,8 +14,8 @@ def run():
     test_dataset = datasets.load_dataset('resources/test.csv', labels_count)
     LOG.info('Done loading datasets')
 
-    vocabulary_size = 300
-    embedding_dimensions = 128
+    vocabulary_size = 500
+    embedding_dimensions = 50
 
     LOG.info('Start training vectorizer')
     vectorizer = model.train_vectorizer(train_dataset, vocabulary_size)
@@ -31,7 +31,7 @@ def run():
     LOG.info('Done building model')
 
     LOG.info('Start training model')
-    epochs = 5
+    epochs = 36
     batch_size = 64
     vectorized_train_dataset = datasets.vectorize(vectorizer, vocabulary_size, train_dataset)
     vectorized_test_dataset = datasets.vectorize(vectorizer, vocabulary_size, test_dataset)

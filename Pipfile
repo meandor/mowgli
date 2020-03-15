@@ -21,3 +21,4 @@ seaborn = "*"
 [scripts]
 lint = "pylint mowgli"
 train = "python mowgli/train.py"
+tensorboard = "tensorboard --logdir resources/tensorboard"

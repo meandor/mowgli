@@ -38,17 +38,18 @@ def classification_model(vocabulary_size, embedding_dimension, labels_count):
         output_dim=embedding_dimension,
         name='embedding_layer'
     )(input_layer)
-
-    layer1 = tf.keras.layers.GlobalAveragePooling1D()(embedding_layer)
-    layer2 = tf.keras.layers.Dense(256, activation='sigmoid')(layer1)
-    layer3 = tf.keras.layers.Dense(128, activation='sigmoid')(layer2)
-    layer4 = tf.keras.layers.Dense(64, activation='sigmoid')(layer3)
+    layer2 = tf.keras.layers.Flatten()(embedding_layer)
+    layer3 = tf.keras.layers.Dense(40, activation='elu')(layer2)
+    dropout1 = tf.keras.layers.Dropout(0.2)(layer3)
+    layer5 = tf.keras.layers.Dense(30, activation='elu')(dropout1)
+    dropout3 = tf.keras.layers.Dropout(0.2)(layer5)
+    layer7 = tf.keras.layers.Dense(20, activation='elu')(dropout3)
 
     output_layer = tf.keras.layers.Dense(
         labels_count,
         activation='softmax',
         name='classification_output'
-    )(layer4)
+    )(layer7)
     return tf.keras.Model(inputs=input_layer, outputs=output_layer)
 
 
@@ -71,7 +72,7 @@ def train_classification_model(model, batch_size, epochs, train_dataset, test_da
 
     model.compile(
         optimizer='adam',
-        loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+        loss=tf.keras.losses.BinaryCrossentropy(),
         metrics=['accuracy', tf.keras.metrics.Precision()]
     )
 
