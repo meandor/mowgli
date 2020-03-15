@@ -41,15 +41,15 @@ def classification_model(vocabulary_size, embedding_dimension, labels_count):
     layer2 = tf.keras.layers.Flatten()(embedding_layer)
     layer3 = tf.keras.layers.Dense(40, activation='elu')(layer2)
     dropout1 = tf.keras.layers.Dropout(0.2)(layer3)
-    layer5 = tf.keras.layers.Dense(30, activation='elu')(dropout1)
-    dropout3 = tf.keras.layers.Dropout(0.2)(layer5)
-    layer7 = tf.keras.layers.Dense(20, activation='elu')(dropout3)
+    layer4 = tf.keras.layers.Dense(30, activation='elu')(dropout1)
+    dropout3 = tf.keras.layers.Dropout(0.2)(layer4)
+    layer5 = tf.keras.layers.Dense(20, activation='elu')(dropout3)
 
     output_layer = tf.keras.layers.Dense(
         labels_count,
         activation='softmax',
         name='classification_output'
-    )(layer7)
+    )(layer5)
     return tf.keras.Model(inputs=input_layer, outputs=output_layer)
 
 
