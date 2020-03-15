@@ -2,7 +2,7 @@ import numpy as np
 import numpy.testing as npt
 from pytest import raises
 
-from mowgli import datasets, model
+from mowgli import datasets, models
 
 
 def test_should_load_1_label():
@@ -39,7 +39,7 @@ def test_should_load_dataset():
 def test_should_load_dataset_and_vectorize_vocab_size_4():
     given_dataset = datasets.load_dataset('tests/resources/dataset.csv', 3)
     given_vocabulary_size = 4
-    given_vectorizer = model.train_vectorizer(given_dataset, given_vocabulary_size)
+    given_vectorizer = models.train_vectorizer(given_dataset, given_vocabulary_size)
 
     actual_dataset = datasets.vectorize(given_vectorizer, given_vocabulary_size, given_dataset)
     actual_features, actual_labels = next(iter(actual_dataset.batch(3)))
@@ -55,7 +55,7 @@ def test_should_load_dataset_and_vectorize_vocab_size_4():
 def test_should_load_dataset_and_vectorize_vocab_size_10_fill_zeros():
     given_dataset = datasets.load_dataset('tests/resources/dataset.csv', 3)
     given_vocabulary_size = 10
-    given_vectorizer = model.train_vectorizer(given_dataset, given_vocabulary_size)
+    given_vectorizer = models.train_vectorizer(given_dataset, given_vocabulary_size)
 
     actual_dataset = datasets.vectorize(given_vectorizer, given_vocabulary_size, given_dataset)
     actual_features, actual_labels = next(iter(actual_dataset.batch(3)))

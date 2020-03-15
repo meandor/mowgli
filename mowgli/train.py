@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import logging
+import pickle
 
-from mowgli import datasets, model
+from mowgli import datasets, models
 
 LOG = logging.getLogger(__name__)
 
@@ -18,11 +19,11 @@ def run():
     embedding_dimensions = 50
 
     LOG.info('Start training vectorizer')
-    vectorizer = model.train_vectorizer(train_dataset, vocabulary_size)
+    vectorizer = models.train_vectorizer(train_dataset, vocabulary_size)
     LOG.info('Done training vectorizer')
 
     LOG.info('Start building model')
-    classification_model = model.classification_model(
+    classification_model = models.classification_model(
         vocabulary_size,
         embedding_dimensions,
         labels_count
@@ -35,7 +36,7 @@ def run():
     batch_size = 64
     vectorized_train_dataset = datasets.vectorize(vectorizer, vocabulary_size, train_dataset)
     vectorized_test_dataset = datasets.vectorize(vectorizer, vocabulary_size, test_dataset)
-    model.train_classification_model(
+    models.train_classification_model(
         classification_model,
         batch_size,
         epochs,
@@ -45,18 +46,23 @@ def run():
     LOG.info('Done training model')
 
     LOG.info('Start evaluating model')
-    model_metrics, confusion_matrix, classification_report = model.evaluate_classification_model(
+    model_metrics, confusion_matrix, classification_report = models.evaluate_classification_model(
         classification_model,
         vectorized_test_dataset,
         labels
     )
-    model.save_evaluation_results(
+    models.save_evaluation_results(
         model_metrics,
         confusion_matrix,
         classification_report,
         list(labels.values())
     )
     LOG.info('Done evaluating model')
+
+    LOG.info('Start persisting model')
+    classification_model.save('resources/models/classification_model.h5')
+    pickle.dump(vectorizer, open('resources/models/word_vectorizer.pickle', 'wb'))
+    LOG.info('Done persisting model')
 
 
 if __name__ == '__main__':

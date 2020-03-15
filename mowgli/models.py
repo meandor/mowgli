@@ -22,10 +22,14 @@ def _extract_labels(_features, labels):
     return labels
 
 
+def _to_str(sentence_tensor):
+    return str(sentence_tensor.numpy())
+
+
 def train_vectorizer(dataset, vocabulary_size):
     vectorizer = CountVectorizer(
         max_features=vocabulary_size,
-        preprocessor=lambda x: str(x.numpy())
+        preprocessor=_to_str
     )
     vectorizer.fit(dataset.map(_extract_features))
     return vectorizer

@@ -3,7 +3,7 @@ import tensorflow as tf
 from sklearn.feature_extraction.text import CountVectorizer
 from tensorflow.keras import Model
 
-from mowgli import model
+from mowgli import models
 
 
 def test_should_return_vectorizer():
@@ -12,7 +12,7 @@ def test_should_return_vectorizer():
         [2, 1, 0, 0]
     ))
 
-    actual = model.train_vectorizer(given_dataset, 1337)
+    actual = models.train_vectorizer(given_dataset, 1337)
     expected_type = CountVectorizer
     expected_features = ['bar', 'foo', 'foobar', 'spaghetti']
 
@@ -26,7 +26,7 @@ def test_should_train_vectorizer():
         [2, 1, 0, 0]
     ))
 
-    vectorizer = model.train_vectorizer(given_dataset, 4)
+    vectorizer = models.train_vectorizer(given_dataset, 4)
     actual = vectorizer.transform(tf.constant(['foo'])).toarray()
     expected = [0, 1, 0, 0]
 
@@ -34,7 +34,7 @@ def test_should_train_vectorizer():
 
 
 def test_should_return_model():
-    actual = type(model.classification_model(1000, 16, 10))
+    actual = type(models.classification_model(1000, 16, 10))
     expected = Model
 
     assert expected == actual
@@ -47,10 +47,10 @@ def test_should_calculate_confusion_matrix_with_3_classes(mocker):
     ))
     mock_model = mocker.Mock()
     mock_model.predict.return_value = [[0, 0, 1], [1, 0, 0], [0, 0, 1], [1, 0, 0]]
-    model_metrics_mock = mocker.patch('mowgli.model._model_metrics')
+    model_metrics_mock = mocker.patch('mowgli.models._model_metrics')
     model_metrics_mock.return_value = 'foo'
 
-    actual = model.evaluate_classification_model(
+    actual = models.evaluate_classification_model(
         mock_model,
         given_dataset,
         {0: 'foo', 1: 'bar', 2: 'foobar'}
@@ -107,7 +107,7 @@ def test_should_transform_classification_report_to_datastore():
         }
     }
 
-    actual = model._to_columns(given_classification_report)
+    actual = models._to_columns(given_classification_report)
     expected = {
         'intent': ['foo', 'foo', 'foo', 'bar', 'bar', 'bar'],
         'metric': ['precision', 'recall', 'f1-score', 'precision', 'recall', 'f1-score'],
