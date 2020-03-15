@@ -15,7 +15,7 @@ def run():
     LOG.info('Done loading datasets')
 
     vocabulary_size = 300
-    embedding_dimensions = 125
+    embedding_dimensions = 128
 
     LOG.info('Start training vectorizer')
     vectorizer = model.train_vectorizer(train_dataset, vocabulary_size)
@@ -31,8 +31,8 @@ def run():
     LOG.info('Done building model')
 
     LOG.info('Start training model')
-    epochs = 10
-    batch_size = 32
+    epochs = 5
+    batch_size = 64
     vectorized_train_dataset = datasets.vectorize(vectorizer, vocabulary_size, train_dataset)
     vectorized_test_dataset = datasets.vectorize(vectorizer, vocabulary_size, test_dataset)
     model.train_classification_model(
@@ -50,7 +50,12 @@ def run():
         vectorized_test_dataset,
         labels
     )
-    model.save_evaluation_results(model_metrics, confusion_matrix, classification_report)
+    model.save_evaluation_results(
+        model_metrics,
+        confusion_matrix,
+        classification_report,
+        list(labels.values())
+    )
     LOG.info('Done evaluating model')
 
 

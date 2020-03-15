@@ -40,14 +40,15 @@ def classification_model(vocabulary_size, embedding_dimension, labels_count):
     )(input_layer)
 
     layer1 = tf.keras.layers.GlobalAveragePooling1D()(embedding_layer)
-    layer2 = tf.keras.layers.Dense(100, activation='relu')(layer1)
-    layer3 = tf.keras.layers.Dense(25, activation='relu')(layer2)
+    layer2 = tf.keras.layers.Dense(256, activation='sigmoid')(layer1)
+    layer3 = tf.keras.layers.Dense(128, activation='sigmoid')(layer2)
+    layer4 = tf.keras.layers.Dense(64, activation='sigmoid')(layer3)
 
     output_layer = tf.keras.layers.Dense(
         labels_count,
         activation='softmax',
         name='classification_output'
-    )(layer3)
+    )(layer4)
     return tf.keras.Model(inputs=input_layer, outputs=output_layer)
 
 
@@ -142,7 +143,6 @@ def _to_columns(classification_report_data):
 
 
 def _plot_classification_report(base_path, classification_report_data):
-    sns.set()
     data_frame = pd.DataFrame(_to_columns(classification_report_data))
     pivot_data_frame = data_frame.pivot(index='intent', columns='metric', values='metric_value')
     figure, axis = plt.subplots(figsize=(9, 6))
@@ -162,10 +162,35 @@ def _plot_classification_report(base_path, classification_report_data):
     figure.savefig(base_path + 'classification_report.png')
 
 
-def save_evaluation_results(model_metrics, _confusion_matrix_data, classification_report_data):
+def _plot_confusion_matrix(base_path, labels, confusion_matrix_data):
+    data_frame = pd.DataFrame(confusion_matrix_data, index=labels, columns=labels)
+    figure, axis = plt.subplots(figsize=(10, 7))
+    sns_heatmap = sns.heatmap(
+        data_frame,
+        annot=True,
+        fmt='d',
+        linewidths=.5,
+        ax=axis,
+        cmap='YlGnBu'
+    )
+    sns_heatmap.set_yticklabels(
+        sns_heatmap.get_yticklabels(),
+        rotation=45,
+        horizontalalignment='right'
+    )
+    sns_heatmap.set_xticklabels(
+        sns_heatmap.get_yticklabels(),
+        rotation=45,
+        horizontalalignment='right',
+    )
+    figure.savefig(base_path + 'confusion_matrix.png')
+
+
+def save_evaluation_results(model_metrics, confusion_matrix_data, classification_report_data, labels):
     base_path = 'resources/evaluation/'
     with open(os.path.realpath(base_path + 'metrics.json'), 'w') as metrics_file:
         formatted_metrics = {k: '%.2f' % v for k, v in model_metrics.items()}
         metrics_file.write(json.dumps(formatted_metrics))
         metrics_file.close()
     _plot_classification_report(base_path, classification_report_data)
+    _plot_confusion_matrix(base_path, labels, confusion_matrix_data)
