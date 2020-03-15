@@ -13,8 +13,8 @@ pytest-mock = "*"
 python_version = "3.7"
 
 [packages]
-tensorflow = "==2.1.0"
 mowgli = {editable = true,path = "."}
+tensorflow = "==2.1.0"
 scikit-learn = "*"
 seaborn = "*"
 
