@@ -17,8 +17,11 @@ mowgli = {editable = true,path = "."}
 tensorflow = "==2.1.0"
 scikit-learn = "*"
 seaborn = "*"
+flask = "*"
+gunicorn = "*"
 
 [scripts]
 lint = "pylint mowgli"
-train = "python mowgli/train.py"
+serve = "gunicorn -w 4 mowgli.endpoints:APP"
 tensorboard = "tensorboard --logdir resources/tensorboard"
+train = "python mowgli/train.py"

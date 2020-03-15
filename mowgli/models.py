@@ -1,6 +1,8 @@
 import json
 import logging
 import os
+import pickle
+import threading
 from functools import reduce, partial
 
 import matplotlib.pyplot as plt
@@ -11,7 +13,46 @@ import tensorflow as tf
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import confusion_matrix, classification_report
 
+from mowgli import datasets
+
 LOG = logging.getLogger(__name__)
+_CLASSIFIER = None
+_CLASSIFIER_LOCK = threading.RLock()
+_VECTORIZER = None
+_VECTORIZER_LOCK = threading.RLock()
+
+
+def _load_classification_model():
+    LOG.info('Start loading classification model')
+    model_path = 'resources/models/classification_model.h5'
+    loaded_classification_model = tf.keras.models.load_model(model_path)
+    LOG.info('Done loading classification model')
+    return loaded_classification_model
+
+
+def _load_vectorizer():
+    LOG.info('Start loading vectorizer model')
+    vectorizer = pickle.load(open('resources/models/word_vectorizer.pickle', 'rb'))
+    LOG.info('Done loading vectorizer model')
+    return vectorizer
+
+
+def get_classifier():
+    global _CLASSIFIER
+    if not _CLASSIFIER:
+        LOG.info("Creating a new classification model instance")
+        with _CLASSIFIER_LOCK:
+            _CLASSIFIER = _load_classification_model()
+    return _CLASSIFIER
+
+
+def get_vectorizer():
+    global _VECTORIZER
+    if not _VECTORIZER:
+        LOG.info("Creating a new vectorizer model instance")
+        with _VECTORIZER_LOCK:
+            _VECTORIZER = _load_vectorizer()
+    return _VECTORIZER
 
 
 def _extract_features(features, _labels):
@@ -191,7 +232,12 @@ def _plot_confusion_matrix(base_path, labels, confusion_matrix_data):
     figure.savefig(base_path + 'confusion_matrix.png')
 
 
-def save_evaluation_results(model_metrics, confusion_matrix_data, classification_report_data, labels):
+def save_evaluation_results(
+        model_metrics,
+        confusion_matrix_data,
+        classification_report_data,
+        labels
+):
     base_path = 'resources/evaluation/'
     with open(os.path.realpath(base_path + 'metrics.json'), 'w') as metrics_file:
         formatted_metrics = {k: '%.2f' % v for k, v in model_metrics.items()}
@@ -199,3 +245,12 @@ def save_evaluation_results(model_metrics, confusion_matrix_data, classification
         metrics_file.close()
     _plot_classification_report(base_path, classification_report_data)
     _plot_confusion_matrix(base_path, labels, confusion_matrix_data)
+
+
+def classify_intent(classifier_model, vectorizer, labels, message):
+    message_tensor = tf.data.Dataset.from_tensor_slices([message]).map(lambda x: (x, []))
+    vectorized_message = datasets.vectorize(vectorizer, 500, message_tensor)
+    [one_hot_encoded_label] = classifier_model.predict(vectorized_message.batch(1))
+    predicted_label_index = np.argmax(one_hot_encoded_label)
+    predicted_intent = labels.get(predicted_label_index)
+    return predicted_intent, float(one_hot_encoded_label[predicted_label_index])
