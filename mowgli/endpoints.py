@@ -19,8 +19,10 @@ def is_valid(incoming_request):
 
 @APP.route('/intent', methods=['GET'])
 def classify_intent():
+    LOG.info('Got intent classification request')
     message = request.args.get('message')
     if not message:
+        LOG.info('No message param present')
         return {'error': 'message is not present'}, 400
 
     intent, probability = models.classify_intent(
@@ -29,4 +31,5 @@ def classify_intent():
         datasets.labels('resources/labels.csv'),
         message
     )
+    LOG.info('Classified intent: (%s, %f)', intent, probability)
     return {'intent': {'name': intent, 'probability': probability}}
