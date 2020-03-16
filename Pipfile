@@ -7,14 +7,14 @@ verify_ssl = true
 pytest = "*"
 pylint = "*"
 tensorboard = "*"
+tensorflow = "==2.1.0"
 pytest-mock = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.6"
 
 [packages]
 mowgli = {editable = true,path = "."}
-tensorflow = "==2.1.0"
 scikit-learn = "*"
 seaborn = "*"
 flask = "*"

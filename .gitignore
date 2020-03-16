@@ -40,3 +40,4 @@ resources/tensorboard
 /resources/evaluation/metrics.json
 /resources/evaluation/classification_report.png
 /resources/evaluation/confusion_matrix.png
+/requirements.txt
