@@ -24,7 +24,7 @@ commands:
           paths:
             - ".venv"
             - "/usr/local/bin"
-            - "/usr/local/lib/python3.7/site-packages"
+            - "/usr/local/lib/python3.6/site-packages"
 
 jobs:
   test:
