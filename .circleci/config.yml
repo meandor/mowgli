@@ -3,7 +3,7 @@ version: 2.1
 python-docker-image: &python-docker-image
   working_directory: ~/repo
   docker:
-    - image: circleci/python:3.7
+    - image: circleci/python:3.6
       environment:
         PIPENV_VENV_IN_PROJECT: true
 
