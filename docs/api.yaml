@@ -1,0 +1,67 @@
+openapi: 3.0.1
+info:
+  title: Mowgli
+  description: >-
+    A intent classification service that will classify a given message into trained intents.
+
+  license:
+    name: MIT
+    url: 'https://github.com/meandor/mowgli/blob/master/LICENSE'
+  version: 0.1.0
+
+paths:
+  /intent:
+    get:
+      summary: Classifies a given message into an intent
+      description: Returns classified intent for given message
+      parameters:
+      - name: message
+        in: query
+        description: Message to be classified
+        required: true
+        style: form
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful classification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntentClassificationResponse'
+        '400':
+          description: Invalid message value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    IntentClassificationResponse:
+      required:
+      - intent
+      type: object
+      properties:
+        intent:
+          $ref: '#/components/schemas/Intent'
+    Intent:
+      required:
+      - name
+      - probability
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'foo_intent'
+        probability:
+          type: number
+          example: 0.991
+    ErrorResponse:
+      required:
+      - error
+      type: object
+      properties:
+        error:
+          type: string
+          example: 'message not present'

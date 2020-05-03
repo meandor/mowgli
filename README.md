@@ -4,6 +4,19 @@
 A _Python_ service to train and serve a neural network that classifies intents.
 Mowgli uses [pipenv](https://github.com/pypa/pipenv).
 
+## Documentation
+### Rest API
+To see how the API works, please have a look at the [OpenAPI 3.0 specification]('https://github.com/meandor/mowgli/blob/master/docs/api.yaml')
+
+### Data flow
+#### Incoming data
+Mowgli needs the files `labels.csv`, `test.csv` and `train.csv`. They need to be stored in the 
+`./resources` folder. To create them you could either handcraft them or use [tabula](https://github.com/DiscoverAI/tabula).
+
+#### Outgoing data
+Mowgli creates a trained model (`./resources/models/classification_model.h5`) and vectorizer (`./resources/models/word_vectorizer.pickle`)
+after training. Both are needed to serve Mowgli.
+
 ## Install
 To install locally:
 ```bash
@@ -41,6 +54,17 @@ server with:
 ```bash
 pipenv run serve
 ```
+
+## Serve via deployment
+The docker image for Mowgli is based on the tensorflow image. That means there is not need to install
+Tensorflow in the docker image and it is optimized already.
+
+To build the image run:
+```bash
+make docker-image
+```
+Afterwards the image is available under the name: `mowgli`
+This can be used to deploy it anywhere.
 
 ## Run linter
 ```bash
