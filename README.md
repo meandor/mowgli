@@ -11,7 +11,7 @@ Mowgli uses [pipenv](https://github.com/pypa/pipenv).
 
 ## Documentation
 ### Rest API
-To see how the API works, please have a look at the [OpenAPI 3.0 specification]('https://github.com/meandor/mowgli/blob/master/docs/api.yaml')
+To see how the API works, please have a look at the [OpenAPI 3.0 specification](https://github.com/meandor/mowgli/blob/master/docs/api.yaml)
 
 ### Data flow
 #### Incoming data
@@ -61,8 +61,8 @@ pipenv run serve
 ```
 
 ## Serve via deployment
-The docker image for Mowgli is based on the tensorflow image. That means there is not need to install
-Tensorflow in the docker image and it is optimized already.
+The docker image for Mowgli is based on the tensorflow image. That means there is no need to install
+Tensorflow in the docker image.
 
 To build the image run:
 ```bash
