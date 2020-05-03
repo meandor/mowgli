@@ -1,6 +1,11 @@
 # Mowgli
 [![CircleCI](https://circleci.com/gh/meandor/mowgli.svg?style=svg)](https://circleci.com/gh/meandor/mowgli)
 
+> A man-trained boy would have been badly bruised, for the fall was a good fifteen feet, but Mowgli fell as Baloo had
+> taught him to fall, and landed on his feet.
+>
+>  -- Rudyard Kipling, The Jungle Book
+
 A _Python_ service to train and serve a neural network that classifies intents.
 Mowgli uses [pipenv](https://github.com/pypa/pipenv).
 
